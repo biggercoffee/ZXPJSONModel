@@ -43,13 +43,6 @@
  */
 - (void)zxp_setObjectClassInArray:(NSDictionary<NSString *,Class> *)dictionary;
 
-/**
- *  映射的对象
- *
- *  @param dictionary key为属性名,value为映射对象的class
- */
-- (void)zxp_setObjectClassForObject:(NSDictionary<NSString *,Class> *)dictionary;
-
 ///忽略映射的属性，如果属性被加入到此数组里，则在为model赋值的时候，被列入的属性不会进行映射
 @property (nonatomic,copy) NSArray<NSString *> *zxp_ignoreMapProperties;
 

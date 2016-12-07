@@ -34,6 +34,30 @@
                         break;
                     case 'D':
                         newValue = @([value doubleValue]);
+                        break;
+                    case '@': {
+                        
+                        NSString *propertyClassName = [propertyType substringFromIndex:3];
+                        propertyClassName = [propertyClassName substringToIndex:[propertyClassName rangeOfString:@"\","].location];
+                        
+                        if ([propertyClassName isEqualToString:@"NSString"]) {
+                            newValue = value;
+                            if ([value isKindOfClass:NSClassFromString(@"__NSCFNumber")]) {
+                                newValue = [value stringValue];
+                            }
+                        }
+                        else if ([propertyClassName isEqualToString:@"NSDictionary"] || [propertyClassName isEqualToString:@"NSMutableDictionary"]) {
+                            newValue = value;
+                        }
+                        else if ([propertyClassName isEqualToString:@"NSArray"] || [propertyClassName isEqualToString:@"NSMutableArray"]) {
+                            break;
+                        }
+                        else {
+                            [self zxp_setObjectClassForObject:@{propertyName:NSClassFromString(propertyClassName)}];
+                        }
+                        
+                        break;
+                    }
                     default:
                         newValue = value;
                         break;
@@ -91,6 +115,26 @@
         @autoreleasepool {
             objc_property_t property = properties[i];
             NSString *propertyName = @(property_getName(property));
+            NSString *propertyType = @(property_getAttributes(property));
+            
+            NSString *type = [[propertyType substringWithRange:NSMakeRange(1, 1)] uppercaseString];
+            switch ([type characterAtIndex:0]) {
+                case '@': {
+                    
+                    NSString *propertyClassName = [propertyType substringFromIndex:3];
+                    propertyClassName = [propertyClassName substringToIndex:[propertyClassName rangeOfString:@"\","].location];
+                    
+                    if (![propertyClassName isEqualToString:@"NSDictionary"] &&
+                        ![propertyClassName isEqualToString:@"NSMutableDictionary"] &&
+                        ![propertyClassName isEqualToString:@"NSArray"] &&
+                        ![propertyClassName isEqualToString:@"NSMutableArray"] &&
+                        ![propertyClassName isEqualToString:@"NSString"]) {
+                        
+                        [self zxp_setObjectClassForObject:@{propertyName:NSClassFromString(propertyClassName)}];
+                    }
+                    break;
+                }
+            }
             
             if (class_respondsToSelector([self class], NSSelectorFromString(propertyName))) {
                 id propertyValue = [self valueForKey:propertyName];
@@ -135,6 +179,11 @@
     objc_setAssociatedObject(self, _cmd, dictionary, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+/**
+ *  映射的对象
+ *
+ *  @param dictionary key为属性名,value为映射对象的class
+ */
 - (void)zxp_setObjectClassForObject:(NSDictionary<NSString *,Class> *)dictionary {
     objc_setAssociatedObject(self, _cmd, dictionary, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }

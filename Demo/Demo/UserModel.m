@@ -14,7 +14,6 @@
 {
     self = [super init];
     if (self) {
-        [self zxp_setObjectClassForObject:@{@"otherInfo":[OtherModel class]}];
         [self zxp_setObjectClassInArray:@{@"otherInfos":[OtherModel class]}];
     }
     return self;
