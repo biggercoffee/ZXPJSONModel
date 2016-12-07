@@ -40,16 +40,13 @@
                         NSString *propertyClassName = [propertyType substringFromIndex:3];
                         propertyClassName = [propertyClassName substringToIndex:[propertyClassName rangeOfString:@"\","].location];
                         
+                        newValue = value;
                         if ([propertyClassName isEqualToString:@"NSString"]) {
-                            newValue = value;
                             if ([value isKindOfClass:NSClassFromString(@"__NSCFNumber")]) {
                                 newValue = [value stringValue];
                             }
                         }
-                        else if ([propertyClassName isEqualToString:@"NSDictionary"] || [propertyClassName isEqualToString:@"NSMutableDictionary"]) {
-                            newValue = value;
-                        }
-                        else if ([propertyClassName isEqualToString:@"NSArray"] || [propertyClassName isEqualToString:@"NSMutableArray"]) {
+                        else if ([propertyClassName hasPrefix:@"NS"]) {
                             break;
                         }
                         else {
@@ -124,12 +121,7 @@
                     NSString *propertyClassName = [propertyType substringFromIndex:3];
                     propertyClassName = [propertyClassName substringToIndex:[propertyClassName rangeOfString:@"\","].location];
                     
-                    if (![propertyClassName isEqualToString:@"NSDictionary"] &&
-                        ![propertyClassName isEqualToString:@"NSMutableDictionary"] &&
-                        ![propertyClassName isEqualToString:@"NSArray"] &&
-                        ![propertyClassName isEqualToString:@"NSMutableArray"] &&
-                        ![propertyClassName isEqualToString:@"NSString"]) {
-                        
+                    if (![propertyClassName hasPrefix:@"NS"]) {
                         [self zxp_setObjectClassForObject:@{propertyName:NSClassFromString(propertyClassName)}];
                     }
                     break;
