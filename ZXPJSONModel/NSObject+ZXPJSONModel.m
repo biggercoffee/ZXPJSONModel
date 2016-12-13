@@ -65,8 +65,13 @@
             NSDictionary<NSString *,Class> *objectClassDictionary = objc_getAssociatedObject(self, @selector(zxp_setObjectClassForObject:));
             NSDictionary<NSString *,Class> *objectClassInArrayDictionary = objc_getAssociatedObject(self, @selector(zxp_setObjectClassInArray:));
             if ([objectClassDictionary.allKeys containsObject:propertyName]) {
-                Class mapClass = objectClassDictionary[propertyName];
-                NSObject *obj = [mapClass new];
+                
+                NSObject *obj = [self valueForKey:propertyName];
+                
+                if (obj == nil) {
+                    Class mapClass = objectClassDictionary[propertyName];
+                    obj = [mapClass new];
+                }
                 
                 [obj zxp_setValuesWithDictionary:value];
                 [self setValue:obj forKey:propertyName];
