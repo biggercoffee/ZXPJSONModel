@@ -25,7 +25,7 @@
             
             id value = dictionary[propertyName];
             
-            if (value) {
+            if (![value isEqual:[NSNull null]] && [propertyType rangeOfString:@",R,"].location == NSNotFound) {
                 NSString *type = [[propertyType substringWithRange:NSMakeRange(1, 1)] uppercaseString];
                 id newValue = nil;
                 switch ([type characterAtIndex:0]) {
