@@ -55,6 +55,13 @@
                         
                         break;
                     }
+                    case 'B': {
+                        newValue = value;
+                        if (newValue == nil) {
+                            newValue = @NO;
+                        }
+                        break;
+                    }
                     default:
                         newValue = value;
                         break;
